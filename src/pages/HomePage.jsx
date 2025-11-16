@@ -1,19 +1,23 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import HeroSection from "./HomePage/HeroSection"
+import HeroSection from "./HomePage/HeroSection";
 import BatteryFilter from "./HomePage/BatteryFilter";
-import BrandsSection from "./HomePage/BrandsSection"
+import HowFunction from "./HomePage/HowFunction";
 import ProductCard from "../components/ProductCard";
+import About from "./HomePage/About";
+import Contacts from "./HomePage/Contact";
 
 function HomePage() {
   return (
     <>
       <Header />
       <HeroSection />
-      <BrandsSection />
+      <HowFunction />
       <BatteryFilter />
       <ProductCard />
-      <Footer /> 
+      <About />
+      <Contacts />
+      <Footer />
     </>
   );
 }
