@@ -5,29 +5,24 @@ import { useEffect, useState } from "react";
 export default function Header() {
   const [favoritesCount, setFavoritesCount] = useState(0);
 
-  // Atualizar contador de favoritos
+  // Mantém o contador de favoritos atualizado
   useEffect(() => {
-    const updateFavoritesCount = () => {
-      const storedFavorites = localStorage.getItem("favorites");
-      if (storedFavorites) {
-        const favorites = JSON.parse(storedFavorites);
+    const updateCount = () => {
+      const saved = localStorage.getItem("favorites");
+      if (saved) {
+        const favorites = JSON.parse(saved);
         setFavoritesCount(favorites.length);
       } else {
         setFavoritesCount(0);
       }
     };
 
-    // Atualizar inicialmente
-    updateFavoritesCount();
-
-    // Atualizar quando houver mudanças no localStorage
-    window.addEventListener("storage", updateFavoritesCount);
-
-    // Verificar periodicamente (para mudanças na mesma aba)
-    const interval = setInterval(updateFavoritesCount, 500);
+    updateCount();
+    window.addEventListener("storage", updateCount);
+    const interval = setInterval(updateCount, 500);
 
     return () => {
-      window.removeEventListener("storage", updateFavoritesCount);
+      window.removeEventListener("storage", updateCount);
       clearInterval(interval);
     };
   }, []);
@@ -89,7 +84,7 @@ export default function Header() {
               </Link>
             </div>
 
-            {/* Botão de Favoritos */}
+            {/* Favoritos */}
             <Link to="/favorites" className="relative p-2 hover:bg-gray-100 rounded-full transition">
               <Heart className="h-6 w-6 text-gray-700 hover:text-red-500" />
               {favoritesCount > 0 && (
@@ -99,7 +94,7 @@ export default function Header() {
               )}
             </Link>
 
-            {/* Botão do Carrinho */}
+            {/* Carrinho */}
             <Link to="" className="relative p-2 hover:bg-gray-100 rounded-full transition">
               <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-600" />
             </Link>

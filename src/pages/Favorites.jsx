@@ -6,27 +6,24 @@ import Footer from "../components/Footer";
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
 
-  // Carregar favoritos do localStorage
   useEffect(() => {
     loadFavorites();
   }, []);
 
   const loadFavorites = () => {
-    const storedFavorites = localStorage.getItem("favorites");
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
+    const saved = localStorage.getItem("favorites");
+    if (saved) {
+      setFavorites(JSON.parse(saved));
     }
   };
 
-  // Remover produto dos favoritos
   const removeFavorite = (productId) => {
-    const updatedFavorites = favorites.filter((fav) => fav.id !== productId);
-    setFavorites(updatedFavorites);
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    const newFavorites = favorites.filter((fav) => fav.id !== productId);
+    setFavorites(newFavorites);
+    localStorage.setItem("favorites", JSON.stringify(newFavorites));
   };
 
-  // Limpar todos os favoritos
-  const clearAllFavorites = () => {
+  const clearAll = () => {
     setFavorites([]);
     localStorage.removeItem("favorites");
   };
@@ -36,7 +33,6 @@ export default function Favorites() {
       <Header />
       <div className="min-h-screen bg-gray-50 py-20">
         <div className="container mx-auto px-6">
-          {/* Cabeçalho */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <Heart className="h-8 w-8 fill-red-500 text-red-500" />
@@ -46,7 +42,7 @@ export default function Favorites() {
             </div>
             {favorites.length > 0 && (
               <button
-                onClick={clearAllFavorites}
+                onClick={clearAll}
                 className="flex items-center gap-2 px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition-colors"
               >
                 <Trash2 className="h-4 w-4" />
@@ -64,7 +60,6 @@ export default function Favorites() {
                 }`}
           </p>
 
-          {/* Lista de favoritos */}
           {favorites.length === 0 ? (
             <div className="text-center py-20">
               <Heart className="h-24 w-24 text-gray-300 mx-auto mb-4" />
@@ -88,7 +83,6 @@ export default function Favorites() {
                   key={product.id}
                   className="border border-[#002D72] rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white relative"
                 >
-                  {/* Botão de Remover */}
                   <button
                     onClick={() => removeFavorite(product.id)}
                     className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-200"

@@ -6,14 +6,15 @@ export default function ProductCard() {
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
-  // Carregar favoritos do localStorage
+  // Quando a página carrega, busca os favoritos salvos
   useEffect(() => {
-    const storedFavorites = localStorage.getItem("favorites");
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
+    const savedFavorites = localStorage.getItem("favorites");
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites));
     }
   }, []);
 
+  // Busca os produtos da API
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -27,25 +28,23 @@ export default function ProductCard() {
     loadProducts();
   }, []);
 
-  // Verificar se um produto está nos favoritos
+  // Verifica se o produto já está favoritado
   const isFavorite = (productId) => {
     return favorites.some((fav) => fav.id === productId);
   };
 
-  // Adicionar ou remover dos favoritos
+  // Adiciona ou remove produto dos favoritos
   const toggleFavorite = (product) => {
-    let updatedFavorites;
+    let newFavorites;
 
     if (isFavorite(product.id)) {
-      // Remover dos favoritos
-      updatedFavorites = favorites.filter((fav) => fav.id !== product.id);
+      newFavorites = favorites.filter((fav) => fav.id !== product.id);
     } else {
-      // Adicionar aos favoritos
-      updatedFavorites = [...favorites, product];
+      newFavorites = [...favorites, product];
     }
 
-    setFavorites(updatedFavorites);
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    setFavorites(newFavorites);
+    localStorage.setItem("favorites", JSON.stringify(newFavorites));
   };
 
   return (
@@ -67,7 +66,7 @@ export default function ProductCard() {
               key={product.id}
               className="border border-[#002D72] rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white relative"
             >
-              {/* Botão de Favoritos */}
+              {/* Botão de favoritar */}
               <button
                 onClick={() => toggleFavorite(product)}
                 className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-200"
