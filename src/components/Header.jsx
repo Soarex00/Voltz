@@ -1,7 +1,36 @@
-import { ShoppingCart, Zap } from "lucide-react";
+import { ShoppingCart, Zap, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+  const [favoritesCount, setFavoritesCount] = useState(0);
+
+  // Atualizar contador de favoritos
+  useEffect(() => {
+    const updateFavoritesCount = () => {
+      const storedFavorites = localStorage.getItem("favorites");
+      if (storedFavorites) {
+        const favorites = JSON.parse(storedFavorites);
+        setFavoritesCount(favorites.length);
+      } else {
+        setFavoritesCount(0);
+      }
+    };
+
+    // Atualizar inicialmente
+    updateFavoritesCount();
+
+    // Atualizar quando houver mudanças no localStorage
+    window.addEventListener("storage", updateFavoritesCount);
+
+    // Verificar periodicamente (para mudanças na mesma aba)
+    const interval = setInterval(updateFavoritesCount, 500);
+
+    return () => {
+      window.removeEventListener("storage", updateFavoritesCount);
+      clearInterval(interval);
+    };
+  }, []);
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80 shadow-sm">
       <div className="container mx-auto px-4">
@@ -59,9 +88,20 @@ export default function Header() {
                 Cadastrar
               </Link>
             </div>
-            <Link to="" >
-            
-            <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-600" />
+
+            {/* Botão de Favoritos */}
+            <Link to="/favorites" className="relative p-2 hover:bg-gray-100 rounded-full transition">
+              <Heart className="h-6 w-6 text-gray-700 hover:text-red-500" />
+              {favoritesCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {favoritesCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Botão do Carrinho */}
+            <Link to="" className="relative p-2 hover:bg-gray-100 rounded-full transition">
+              <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-600" />
             </Link>
           </div>
         </div>

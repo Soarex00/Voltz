@@ -1,9 +1,18 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 
 export default function ProductCard() {
   const [products, setProducts] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+
+  // Carregar favoritos do localStorage
+  useEffect(() => {
+    const storedFavorites = localStorage.getItem("favorites");
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
+    }
+  }, []);
 
   useEffect(() => {
     async function loadProducts() {
@@ -17,6 +26,27 @@ export default function ProductCard() {
 
     loadProducts();
   }, []);
+
+  // Verificar se um produto está nos favoritos
+  const isFavorite = (productId) => {
+    return favorites.some((fav) => fav.id === productId);
+  };
+
+  // Adicionar ou remover dos favoritos
+  const toggleFavorite = (product) => {
+    let updatedFavorites;
+
+    if (isFavorite(product.id)) {
+      // Remover dos favoritos
+      updatedFavorites = favorites.filter((fav) => fav.id !== product.id);
+    } else {
+      // Adicionar aos favoritos
+      updatedFavorites = [...favorites, product];
+    }
+
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  };
 
   return (
     <section id="product" className="py-20 bg-white">
@@ -35,8 +65,23 @@ export default function ProductCard() {
           {products.map((product) => (
             <div
               key={product.id}
-              className="border border-[#002D72] rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white"
+              className="border border-[#002D72] rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white relative"
             >
+              {/* Botão de Favoritos */}
+              <button
+                onClick={() => toggleFavorite(product)}
+                className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-200"
+                aria-label={isFavorite(product.id) ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+              >
+                <Heart
+                  className={`h-5 w-5 transition-colors ${
+                    isFavorite(product.id)
+                      ? "fill-red-500 text-red-500"
+                      : "text-gray-400 hover:text-red-500"
+                  }`}
+                />
+              </button>
+
               <img
                 src={product.image}
                 alt={product.name}
