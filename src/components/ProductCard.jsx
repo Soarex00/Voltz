@@ -1,9 +1,13 @@
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
+import { addToCart } from "../utils/addToCart";
+// import { useForm } from "react-hook-form";
 
 export default function ProductCard() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([])
+  // const [favoritos, setFavoritos] = useState([])
+  // const { register, handleSubmit, reset } = useForm()
 
   useEffect(() => {
     async function loadProducts() {
@@ -17,6 +21,7 @@ export default function ProductCard() {
 
     loadProducts();
   }, []);
+
 
   return (
     <section id="product" className="py-20 bg-white">
@@ -42,6 +47,13 @@ export default function ProductCard() {
                 alt={product.name}
                 className="w-full h-40 object-contain p-4"
               />
+              
+              <h3>{product.name} &nbsp;
+              {/* {favoritos.includes(filme.id) ? 
+            <FaHeart onClick={desfavoritaFilme} className='btn-favorito destaque' /> :
+            <FaRegHeart onClick={favoritaFilme} className='btn-favorito' />
+          } */}
+        </h3>
 
               <div className="px-5 pb-6 text-center">
                 <p className="text-gray-500 text-sm mb-1">
@@ -60,7 +72,10 @@ export default function ProductCard() {
                   })}
                 </p>
 
-                <button className="w-full flex items-center justify-center gap-2 bg-[#002D72] text-white font-semibold py-2.5 rounded-lg hover:bg-[#003B99] transition-all duration-200">
+                <button
+                  onClick={() => addToCart(product)}
+                  className="w-full flex items-center justify-center gap-2 bg-[#002D72] text-white font-semibold py-2.5 rounded-lg hover:bg-[#003B99] transition-all duration-200"
+                >
                   <ShoppingCart className="h-5 w-5" />
                   Adicionar ao Carrinho
                 </button>

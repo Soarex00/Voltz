@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -59,9 +59,8 @@ export default function Header() {
                 Cadastrar
               </Link>
             </div>
-            <Link to="" >
-            
-            <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-600" />
+            <Link to="/shoppingCart">
+              <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-600" />
             </Link>
           </div>
         </div>
