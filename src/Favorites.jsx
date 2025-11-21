@@ -1,7 +1,8 @@
-import { Heart, ShoppingCart, Trash2 } from "lucide-react";
+import { Heart, ShoppingCart, Trash2, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getFavorites, addToFavorites } from "./utils/addToFavorites";
 import { addToCart } from "./utils/addToCart";
+import { Link } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -33,6 +34,14 @@ export default function Favorites() {
       
       <main className="flex-1 bg-gray-50 py-12">
         <div className="container mx-auto px-6">
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-[#002D72] hover:text-[#003B99] font-semibold mb-6 transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            Voltar para a página inicial
+          </Link>
+
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-[#002D72] mb-2">
               Meus Favoritos
