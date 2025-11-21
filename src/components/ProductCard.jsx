@@ -1,16 +1,25 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { addToCart } from "../utils/addToCart";
+import { addToFavorites, isFavorite } from "../utils/addToFavorites";
 
 export default function ProductCard() {
   const [products, setProducts] = useState([]);
+  const [favorites, setFavorites] = useState({});
 
   useEffect(() => {
     async function loadProducts() {
       try {
         const response = await api.get("/products");
         setProducts(response.data);
+        
+        
+        const favoriteStatus = {};
+        response.data.forEach(product => {
+          favoriteStatus[product.id] = isFavorite(product.id);
+        });
+        setFavorites(favoriteStatus);
       } catch (error) {
         console.log("Erro ao carregar produtos:", error);
       }
@@ -18,6 +27,15 @@ export default function ProductCard() {
 
     loadProducts();
   }, []);
+
+  // Função para adicionar/remover dos favoritos
+  const toggleFavorite = (product) => {
+    const isAdded = addToFavorites(product);
+    setFavorites(prev => ({
+      ...prev,
+      [product.id]: isAdded
+    }));
+  };
 
   return (
     <section id="product" className="py-20 bg-white">
@@ -37,8 +55,22 @@ export default function ProductCard() {
           {products.map((product) => (
             <div
               key={product.id}
-              className="border border-[#002D72] rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white flex flex-col"
+              className="border border-[#002D72] rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white flex flex-col relative"
             >
+              {/* Botão de Favorito */}
+              <button
+                onClick={() => toggleFavorite(product)}
+                className="absolute top-3 right-3 z-10 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 group"
+              >
+                <Heart
+                  className={`h-5 w-5 transition-all duration-300 ${
+                    favorites[product.id]
+                      ? "fill-red-500 text-red-500 scale-110"
+                      : "text-gray-400 group-hover:text-red-500"
+                  }`}
+                />
+              </button>
+
               <img
                 src={product.image}
                 alt={product.name}
