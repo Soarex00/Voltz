@@ -8,7 +8,8 @@
       "rating": 4,
       "reviews": 189,
       "price": 459.0,
-      "vehicles": ["Onix", "Onix Plus", "Prisma", "Celta", "Montana", "Cruze"]
+      "vehicles": ["Onix", "Onix Plus", "Prisma", "Celta", "Montana", "Cruze"],
+      "userReviews": []
     },
     {
       "id": 2,
@@ -18,7 +19,8 @@
       "rating": 4,
       "reviews": 128,
       "price": 280.0,
-      "vehicles": ["Gol", "Voyage", "Saveiro", "Fox", "Polo"]
+      "vehicles": ["Gol", "Voyage", "Saveiro", "Fox", "Polo"],
+      "userReviews": []
     },
     {
       "id": 3,
@@ -28,7 +30,8 @@
       "rating": 5,
       "reviews": 86,
       "price": 360.0,
-      "vehicles": ["HB20", "HB20S", "Kia Picanto", "Renault Sandero"]
+      "vehicles": ["HB20", "HB20S", "Kia Picanto", "Renault Sandero"],
+      "userReviews": []
     }
   ]
 }
