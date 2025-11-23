@@ -1,17 +1,37 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2, ShoppingCart as CartIcon } from "lucide-react";
+import { getCartItems } from "./utils/addToCart";
 
 export default function ShoppingCart() {
   const [cart, setCart] = useState([]);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    const user = localStorage.getItem('user');
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    const cartItems = getCartItems();
     setCart(cartItems);
-  }, []);
+  }, [navigate]);
 
   function removeItem(id) {
     const updated = cart.filter((item) => item.id !== id);
+    setCart(updated);
+    localStorage.setItem("cart", JSON.stringify(updated));
+  }
+
+  function updateQuantity(id, newQuantity) {
+    if (newQuantity < 1) {
+      removeItem(id);
+      return;
+    }
+    
+    const updated = cart.map((item) => 
+      item.id === id ? { ...item, quantity: newQuantity } : item
+    );
     setCart(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
   }

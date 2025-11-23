@@ -5,6 +5,7 @@ import { addToCart } from "./utils/addToCart";
 import { Link } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Swal from "sweetalert2";
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -25,17 +26,16 @@ export default function Favorites() {
 
   const handleAddToCart = (product) => {
     addToCart(product);
-    alert("Produto adicionado ao carrinho!");
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 bg-gray-50 py-12">
         <div className="container mx-auto px-6">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="inline-flex items-center gap-2 text-[#002D72] hover:text-[#003B99] font-semibold mb-6 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -80,7 +80,7 @@ export default function Favorites() {
                       alt={product.name}
                       className="w-full h-40 object-contain p-4"
                     />
-                    
+
                     <button
                       onClick={() => removeFavorite(product)}
                       className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all group"
@@ -107,7 +107,19 @@ export default function Favorites() {
                     </p>
 
                     <button
-                      onClick={() => handleAddToCart(product)}
+                      onClick={() => {
+                        addToCart(product);
+                        Swal.fire({
+                          toast: true,
+                          position: 'bottom-end',
+                          icon: 'success',
+                          title: 'Produto adicionado ao carrinho',
+                          showConfirmButton: false,
+                          timer: 2800,
+                          timerProgressBar: true
+                        });
+                      }}
+
                       className="w-full flex items-center justify-center gap-2 bg-[#002D72] text-white font-semibold py-2.5 rounded-lg hover:bg-[#003B99] transition-all mt-auto"
                     >
                       <ShoppingCart className="h-5 w-5" />

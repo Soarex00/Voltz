@@ -1,4 +1,4 @@
-import { ShoppingCart, Heart, Star, MessageSquare, Trash2, } from "lucide-react";
+import { ShoppingCart, Heart, Star, MessageSquare, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { addToCart } from "../utils/addToCart";
@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { addToFavorites, isFavorite } from "../utils/addToFavorites";
 import Swal from "sweetalert2";
 
-export default function ProductCard() {
-  const [products, setProducts] = useState([]);
+export default function ProductCardFilter({ products: productsProp }) {
+  const [products, setProducts] = useState(productsProp || []);
   const [favorites, setFavorites] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export default function ProductCard() {
       });
       return;
     }
-    
+
     addToCart(produto);
     Swal.fire({
       toast: true,
@@ -39,41 +39,6 @@ export default function ProductCard() {
       timer: 2800,
       timerProgressBar: true
     });
-  }
-
-  async function excluirItem(id) {
-    const resultado = await Swal.fire({
-      title: 'Tem certeza?',
-      text: "Esta ação não pode ser desfeita!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#002D72',
-      cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Sim, excluir!',
-      cancelButtonText: 'Cancelar'
-    });
-
-    if (resultado.isConfirmed) {
-      try {
-        await api.delete(`/products/${id}`);
-        
-        Swal.fire({
-          title: 'Excluído!',
-          text: 'O produto foi removido com sucesso.',
-          icon: 'success',
-          confirmButtonColor: '#002D72'
-        });
-
-        carregarProdutos();
-      } catch (error) {
-        Swal.fire({
-          title: 'Erro!',
-          text: 'Não foi possível excluir o produto.',
-          icon: 'error',
-          confirmButtonColor: '#002D72'
-        });
-      }
-    }
   }
 
   {/* Verificar se é admin*/ }
@@ -95,9 +60,54 @@ export default function ProductCard() {
     checkAdmin();
   }, []);
 
+  async function excluirItem(id) {
+    const resultado = await Swal.fire({
+      title: 'Tem certeza?',
+      text: "Esta ação não pode ser desfeita!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#002D72',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (resultado.isConfirmed) {
+      try {
+        await api.delete(`/products/${id}`);
+
+        // Remove o produto do estado local
+        setProducts(prevProducts => prevProducts.filter(produto => produto.id !== id));
+
+        Swal.fire({
+          title: 'Excluído!',
+          text: 'O produto foi removido com sucesso.',
+          icon: 'success',
+          confirmButtonColor: '#002D72'
+        });
+      } catch (error) {
+        Swal.fire({
+          title: 'Erro!',
+          text: 'Não foi possível excluir o produto.',
+          icon: 'error',
+          confirmButtonColor: '#002D72'
+        });
+      }
+    }
+  }
+
   useEffect(() => {
-    carregarProdutos();
-  }, []);
+    if (!productsProp) {
+      carregarProdutos();
+    } else {
+      setProducts(productsProp);
+      const statusFavoritos = {};
+      productsProp.forEach(produto => {
+        statusFavoritos[produto.id] = isFavorite(produto.id);
+      });
+      setFavorites(statusFavoritos);
+    }
+  }, [productsProp]);
 
   async function carregarProdutos() {
     try {
@@ -352,14 +362,6 @@ export default function ProductCard() {
   return (
     <section id="catalogo" className="py-20 bg-white">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#002D72] mb-4">
-            Nossas Baterias
-          </h2>
-          <p className="text-lg text-gray-600">
-            Escolha a melhor bateria para o seu veículo
-          </p>
-        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((produto) => {
@@ -388,6 +390,7 @@ export default function ProductCard() {
                       }`}
                   />
                 </button>
+
                 {isAdmin && (
                   <button
                     onClick={() => excluirItem(produto.id)}

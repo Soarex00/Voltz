@@ -1,37 +1,173 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "image": "./bateria moura.webp",
       "model": "M60GD",
       "name": "Bateria Moura 60ah",
       "rating": 4,
       "reviews": 189,
-      "price": 459.0,
-      "vehicles": ["Onix", "Onix Plus", "Prisma", "Celta", "Montana", "Cruze"],
-      "userReviews": []
+      "price": 459,
+      "vehicles": [
+        "Onix",
+        "Onix Plus",
+        "Prisma",
+        "Celta",
+        "Montana",
+        "Cruze"
+      ],
+      "userReviews": [
+        {
+          "name": "Ricardo",
+          "rating": 5,
+          "comment": "Moura é qualidade garantida!",
+          "date": "2025-11-22T18:27:33.254Z"
+        }
+      ]
     },
     {
-      "id": 2,
+      "id": "2",
       "image": "./bateria starke.webp",
       "model": "S60FD",
       "name": "Bateria Starke 60ah",
       "rating": 4,
       "reviews": 128,
-      "price": 280.0,
-      "vehicles": ["Gol", "Voyage", "Saveiro", "Fox", "Polo"],
-      "userReviews": []
+      "price": 280,
+      "vehicles": [
+        "Gol",
+        "Voyage",
+        "Saveiro",
+        "Fox",
+        "Polo"
+      ],
+      "userReviews": [
+        {
+          "name": "Arthur",
+          "rating": 5,
+          "comment": "Produto de ótima qualidade e com bom preço",
+          "date": "2025-11-22T18:26:16.340Z"
+        },
+        {
+          "name": "Diego",
+          "rating": 3,
+          "comment": "Produto barato, mas de qualidade duvidosa",
+          "date": "2025-11-22T18:26:55.608Z"
+        }
+      ]
     },
     {
-      "id": 3,
+      "id": "3",
       "image": "./Bateria Zetta.webp",
       "model": "Z60D",
       "name": "Bateria Zetta 60ah",
       "rating": 5,
       "reviews": 86,
-      "price": 360.0,
-      "vehicles": ["HB20", "HB20S", "Kia Picanto", "Renault Sandero"],
+      "price": 360,
+      "vehicles": [
+        "HB20",
+        "HB20S",
+        "Kia Picanto",
+        "Renault Sandero"
+      ]
+    },
+    {
+      "id": 4,
+      "image": "Bateria Acdelco.webp",
+      "model": "ADR60HD",
+      "name": "Bateria ACDelco 60ah",
+      "rating": 5,
+      "reviews": 86,
+      "price": 465,
+      "vehicles": [
+        "Cruze",
+        "Sonic",
+        "Spin",
+        "Bora",
+        "Gol",
+        "Airtrek",
+        "Asx",
+        "Lancer"
+      ],
       "userReviews": []
+    },
+    {
+      "id": 5,
+      "image": "./bateria heliar.webp",
+      "model": "HNP60HD",
+      "name": "Bateria Heliar 60ah",
+      "rating": 5,
+      "reviews": 86,
+      "price": 595,
+      "vehicles": [
+        "Q3",
+        "A3",
+        "Tiggo 2",
+        "Aircross",
+        "C4 Cactus",
+        "C4 Lounge",
+        "DS4",
+        "XSARA Picasso"
+      ],
+      "userReviews": []
+    },
+    {
+      "id": "f1d2",
+      "image": "https://http2.mlstatic.com/D_NQ_NP_2X_624653-MLB92897920447_092025-F.webp",
+      "model": "MF72LD",
+      "name": "Bateria Moura 72ah",
+      "rating": 0,
+      "reviews": 0,
+      "price": 1244,
+      "vehicles": [
+        "COMPASS TRAILHAWK",
+        "RENEGADE TRAILHAWK",
+        "VITARA 4YOU AT",
+        "GOLF SPORTLINE",
+        "TIGUAN 1.4 TSI"
+      ],
+      "userReviews": []
+    },
+        {
+      "id": "9886",
+      "image": "https://http2.mlstatic.com/D_NQ_NP_2X_890693-MLB73262588759_122023-F.webp",
+      "model": "M135BD",
+      "name": "Bateria Moura 135ah",
+      "price": 1526,
+      "vehicles": [
+        "AGRALE 1800",
+        "LS-1934",
+        "1515",
+        "Constellation Titan",
+        "19-320"
+      ],
+      "userReviews": []
+    }
+  ],
+  "users": [
+    {
+      "id": "051a",
+      "nome": "Heitor Barbosa Hepp",
+      "email": "heitor@hotmail.com",
+      "telefone": "53 999999999",
+      "dataNascimento": "2006-07-18",
+      "endereco": "Avenida Mimosa Rodrigues",
+      "cidade": "Pedro Osório",
+      "estado": "RS",
+      "senha": "123456",
+      "DataCriacao": "2025-11-23T00:40:26.864Z"
+    },
+    {
+      "id": "df3b",
+      "nome": "Administrador Voltz",
+      "email": "admin@admin.com",
+      "telefone": "53 999999999",
+      "dataNascimento": "2000-10-20",
+      "endereco": "Escritório Central Voltz",
+      "cidade": "Pelotas",
+      "estado": "RS",
+      "senha": "admin123",
+      "DataCriacao": "2025-11-15T00:40:26.864Z",
+      "isAdmin": true
     }
   ]
 }
