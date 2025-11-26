@@ -8,37 +8,26 @@
       "rating": 4,
       "reviews": 189,
       "price": 459,
-      "vehicles": ["Onix", "Onix Plus", "Prisma", "Celta", "Montana", "Cruze"],
+      "vehicles": [
+        "Onix",
+        "Onix Plus",
+        "Prisma",
+        "Celta",
+        "Montana",
+        "Cruze"
+      ],
       "userReviews": [
         {
           "name": "Ricardo",
           "rating": 5,
           "comment": "Moura é qualidade garantida!",
           "date": "2025-11-22T18:27:33.254Z"
-        }
-      ]
-    },
-    {
-      "id": "2",
-      "image": "./bateria starke.webp",
-      "model": "S60FD",
-      "name": "Bateria Starke 60ah",
-      "rating": 4,
-      "reviews": 128,
-      "price": 280,
-      "vehicles": ["Gol", "Voyage", "Saveiro", "Fox", "Polo"],
-      "userReviews": [
-        {
-          "name": "Arthur",
-          "rating": 5,
-          "comment": "Produto de ótima qualidade e com bom preço",
-          "date": "2025-11-22T18:26:16.340Z"
         },
         {
-          "name": "Diego",
-          "rating": 3,
-          "comment": "Produto barato, mas de qualidade duvidosa",
-          "date": "2025-11-22T18:26:55.608Z"
+          "name": "Heitor Barbosa Hepp",
+          "rating": 5,
+          "comment": "Excelente Bateria",
+          "date": "2025-11-26T00:34:09.976Z"
         }
       ]
     },
@@ -50,7 +39,12 @@
       "rating": 0,
       "reviews": 86,
       "price": 360,
-      "vehicles": ["HB20", "HB20S", "Kia Picanto", "Renault Sandero"],
+      "vehicles": [
+        "HB20",
+        "HB20S",
+        "Kia Picanto",
+        "Renault Sandero"
+      ],
       "userReviews": []
     },
     {
@@ -133,7 +127,14 @@
       "rating": 0,
       "reviews": 156,
       "price": 589,
-      "vehicles": ["A3", "ARGO", "BRAVO", "AGILE", "SPIN", "HRV"],
+      "vehicles": [
+        "A3",
+        "ARGO",
+        "BRAVO",
+        "AGILE",
+        "SPIN",
+        "HRV"
+      ],
       "userReviews": []
     },
     {
@@ -144,8 +145,22 @@
       "rating": 0,
       "reviews": 234,
       "price": 614,
-      "vehicles": ["Uno", "Palio", "Siena", "Strada", "Fiorino", "Doblo"],
-      "userReviews": []
+      "vehicles": [
+        "Uno",
+        "Palio",
+        "Siena",
+        "Strada",
+        "Fiorino",
+        "Doblo"
+      ],
+      "userReviews": [
+        {
+          "name": "Heitor Barbosa Hepp",
+          "rating": 5,
+          "comment": "Bateria de ótima qualidade",
+          "date": "2025-11-25T22:33:34.595Z"
+        }
+      ]
     },
     {
       "id": "c8d9",
@@ -155,7 +170,14 @@
       "rating": 0,
       "reviews": 198,
       "price": 819,
-      "vehicles": ["Corolla", "Civic", "Jetta", "Passat", "Fusion", "Accord"],
+      "vehicles": [
+        "Corolla",
+        "Civic",
+        "Jetta",
+        "Passat",
+        "Fusion",
+        "Accord"
+      ],
       "userReviews": []
     },
     {
@@ -174,6 +196,23 @@
         "IX 35",
         "Azera",
         "CR-V"
+      ],
+      "userReviews": []
+    },
+    {
+      "id": "82b9",
+      "image": "https://http2.mlstatic.com/D_NQ_NP_2X_622664-MLB51676922956_092022-F.webp",
+      "model": "Z75d",
+      "name": "Bateria Zetta 75ah",
+      "price": 409,
+      "vehicles": [
+        "Berlingo",
+        "Xantia",
+        "Ecosport 2.0",
+        "Clio",
+        "Megane",
+        "Parati",
+        "Logus"
       ],
       "userReviews": []
     }
