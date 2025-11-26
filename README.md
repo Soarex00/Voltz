@@ -1,8 +1,4 @@
-Claro, Conrado. Aqui vai um README profissional, direto, sem firula, na pegada de projeto de faculdade mas parecendo algo de verdade — pra você colocar no GitHub e ficar bonito no portfólio.
 
-Se quiser, depois eu personalizo com print, badges, arquitetura, o que você quiser.
-
----
 
 # 🔋 Voltz — Loja Online de Baterias Automotivas
 
