@@ -34,7 +34,7 @@ GEMINI_API_KEY=sua-chave
 GEMINI_MODEL=gemini-3.1-flash-lite
 ```
 
-Ao enviar a pesquisa do carro, a página inicial chama `/ai/advice?vehicle=MODELO_DO_CARRO`; o servidor realiza uma consulta real ao Gemini e devolve sugestões baseadas nas baterias associadas ao veículo no catálogo, links dos produtos, fonte, modelo e data. Ano, motorização e start-stop ajudam a orientar a confirmação técnica; o cadastro não certifica compatibilidade. A resposta fica em cache por seis horas em memória. Sem chave, o app exibe indisponibilidade e nunca apresenta um texto fixo como se tivesse sido gerado por IA. A chave não é enviada ao frontend.
+Ao enviar a pesquisa do carro, a página inicial chama `/ai/advice?vehicle=MODELO_DO_CARRO`; o servidor realiza uma consulta real ao Gemini e devolve sugestões escolhidas pela IA a partir do catálogo completo, links dos produtos, fonte, modelo e data. Ano, motorização e start-stop ajudam a orientar a confirmação técnica; o cadastro não certifica compatibilidade. A resposta fica em cache por seis horas em memória, por pesquisa e conteúdo do catálogo. Durante a pesquisa, somente os produtos selecionados pela IA aparecem; não há filtro automático por veículo nem resultados locais de reserva em caso de falha da IA. Os IDs retornados são validados contra o catálogo. Sem chave, o app exibe indisponibilidade e nunca apresenta um texto fixo como se tivesse sido gerado por IA. A chave não é enviada ao frontend.
 
 O filtro de compatibilidade usa os veículos cadastrados no catálogo. As orientações de IA são gerais e não inventam compatibilidade de produtos.
 

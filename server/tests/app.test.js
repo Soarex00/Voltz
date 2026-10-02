@@ -86,12 +86,12 @@ test('integração de IA envia chamada ao provedor e identifica fonte; teste usa
   let calls = 0;
   const aiServer = createApp(db,{ aiKey:'chave-de-teste', fetch:async (url, options) => {
     calls++; assert.match(url,/^https:\/\/generativelanguage\.googleapis\.com\/v1beta\/models\/gemini-[a-zA-Z0-9.-]+:generateContent$/); assert.equal(options.headers['x-goog-api-key'],'chave-de-teste'); assert.equal(options.method,'POST');
-    const body = JSON.parse(options.body); assert.equal(body.generationConfig.maxOutputTokens,800); assert.ok(body.systemInstruction.parts[0].text); assert.ok(body.contents[0].parts[0].text);
+    const body = JSON.parse(options.body); assert.equal(body.generationConfig.maxOutputTokens,1600); assert.ok(body.systemInstruction.parts[0].text); assert.ok(body.contents[0].parts[0].text);
     const context = JSON.parse(body.contents[0].parts[0].text);
     assert.equal(context.carroPesquisado, calls === 1 ? 'Onix' : 'Carro inexistente 2024');
-    assert.equal(context.bateriasCadastradas.length, calls === 1 ? 1 : 0);
+    assert.equal(context.bateriasCadastradas.length, 1); assert.equal(body.generationConfig.responseMimeType, 'application/json');
     if (calls === 1) assert.equal(context.bateriasCadastradas[0].id, productId);
-    return { ok:true,json:async () => ({ candidates:[{finishReason:'STOP',content:{parts:[{thought:true,text:'Pensamento interno'},{text:'Consulte o manual e um profissional.'}]}}] }) };
+    return { ok:true,json:async () => ({ candidates:[{finishReason:'STOP',content:{parts:[{thought:true,text:'Pensamento interno'},{text:JSON.stringify({text:'Consulte o manual e um profissional.',productIds:calls === 1 ? [productId] : []})}]}}] }) };
   } }).listen(0,'127.0.0.1');
   await new Promise(resolve => aiServer.once('listening',resolve));
   try {
@@ -105,9 +105,9 @@ test('integração de IA envia chamada ao provedor e identifica fonte; teste usa
   } finally { await new Promise(resolve => aiServer.close(resolve)); }
 });
 test('IA não publica nem armazena respostas incompletas ou erros; permite nova tentativa', async () => {
-  for (const first of [{ok:false,json:async()=>({error:{message:'Segredo do provedor'}})}, {ok:true,json:async()=>({candidates:[{finishReason:'MAX_TOKENS',content:{parts:[{text:'Texto parcial'}]}}]})}, {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[]}}]})}]) {
+  for (const first of [{ok:false,json:async()=>({error:{message:'Segredo do provedor'}})}, {ok:true,json:async()=>({candidates:[{finishReason:'MAX_TOKENS',content:{parts:[{text:'Texto parcial'}]}}]})}, {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[]}}]})}, {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify({text:'Produto inexistente',productIds:['id-inventado']})}]}}]})}, {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'JSON invalido'}]}}]})}]) {
     let calls = 0;
-    const aiServer = createApp(db,{aiKey:'chave-de-teste',fetch:async()=> ++calls === 1 ? first : {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:'Orientação completa.'}]}}]})}}).listen(0,'127.0.0.1');
+    const aiServer = createApp(db,{aiKey:'chave-de-teste',fetch:async()=> ++calls === 1 ? first : {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify({text:'Orientação completa.',productIds:[]})}]}}]})}}).listen(0,'127.0.0.1');
     await new Promise(resolve => aiServer.once('listening',resolve));
     try {
       const url = `http://127.0.0.1:${aiServer.address().port}/ai/advice?vehicle=Onix`;
