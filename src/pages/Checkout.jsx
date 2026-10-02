@@ -9,10 +9,13 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getCartItems } from '../utils/addToCart';
+import { useState } from 'react';
 
 function Checkout() {
   const navigate = useNavigate();
-  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartItems = getCartItems();
+  const [contactError, setContactError] = useState('');
 
   const calculateTotal = () => {
     return cartItems.reduce(
@@ -31,11 +34,12 @@ function Checkout() {
       )
       .join("\n")}\n\nTotal: R$ ${calculateTotal().toFixed(2)}`;
 
-    const phoneNumber = "5553999998888";
+    const phoneNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '';
+    if (!/^\d{10,15}$/.test(phoneNumber)) { setContactError('O contato por WhatsApp ainda não está disponível.'); return; }
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
       message
     )}`;
-    window.open(whatsappUrl, "_blank");
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
   const steps = [
@@ -64,6 +68,7 @@ function Checkout() {
   return (
     <>
       <Header />
+      {contactError && <p role="alert" className="p-4 text-center text-red-700 bg-red-50">{contactError}</p>}
 
       <div className="min-h-screen bg-gray-50">
         <section className="bg-[#002D72] py-12">
@@ -73,7 +78,7 @@ function Checkout() {
                 Finalize sua Compra
               </h1>
               <p className="text-lg text-white/90">
-                Entre em contato conosco pelo WhatsApp para concluir seu pedido
+                Consulte a disponibilidade e combine sua compra com a loja.
               </p>
             </div>
           </div>

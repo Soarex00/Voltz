@@ -1,18 +1,10 @@
+import { getSessionUser } from '../services/session';
+import { readStore, writeStore } from './store';
 export function addToCart(product) {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  const exists = cart.find((item) => item.id === product.id);
-
-  if (exists) {
-    exists.quantity++;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
+  if (!getSessionUser() || getSessionUser().isAdmin) return false;
+  const items = readStore('cart'), existing = items.find(item => item.id === product.id);
+  if (existing) existing.quantity++; else items.push({ ...product, quantity: 1 });
+  writeStore('cart', items); return true;
 }
-
-export function getCartItems() {
-  return JSON.parse(localStorage.getItem("cart")) || [];
-}
-
+export const getCartItems = () => readStore('cart');
+export const saveCartItems = items => writeStore('cart', items);

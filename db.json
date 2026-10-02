@@ -227,8 +227,8 @@
       "endereco": "Avenida Mimosa Rodrigues",
       "cidade": "Pedro Osório",
       "estado": "RS",
-      "senha": "123456",
-      "DataCriacao": "2025-11-23T00:40:26.864Z"
+      "DataCriacao": "2025-11-23T00:40:26.864Z",
+      "password_hash": "d1e545d700b1430db2f871cbe2c2808d:6402c9419fca2814c8718c39f0d17225af1ee2a7196073b4735fd388d189b73de4d1835e5115a81e9897940d6ce091179a196bf9e933763bd949af7a03bf7b37"
     },
     {
       "id": "df3b",
@@ -239,9 +239,9 @@
       "endereco": "Escritório Central Voltz",
       "cidade": "Pelotas",
       "estado": "RS",
-      "senha": "admin123",
       "DataCriacao": "2025-11-15T00:40:26.864Z",
-      "isAdmin": true
+      "isAdmin": true,
+      "password_hash": "5fcfe4c5ef3cda183def57c1c3f25cfa:4b7afc950a766dd4827b8e972be59f73d7b08fc42d58fb8c538e02a7227b8b1767942990b7191df41cdc70307b529addd488d8ff83252e1677caa75b0f5826da"
     }
   ]
 }

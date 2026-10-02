@@ -1,7 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import HeroSection from "./HomePage/HeroSection";
-import BatteryFilter from "./HomePage/BatteryFilter";
 import HowFunction from "./HomePage/HowFunction";
 import ProductCard from "../components/ProductCard";
 import About from "./HomePage/About";
@@ -13,7 +12,6 @@ function HomePage() {
       <Header />
       <HeroSection />
       <HowFunction />
-      <BatteryFilter />
       <ProductCard />
       <About />
       <Contacts />

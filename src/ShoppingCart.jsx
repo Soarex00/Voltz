@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2, ShoppingCart as CartIcon } from "lucide-react";
-import { getCartItems } from "./utils/addToCart";
+import { getCartItems, saveCartItems } from "./utils/addToCart";
+import { getSessionUser } from "./services/session";
 
 export default function ShoppingCart() {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = getSessionUser();
     if (!user) {
       navigate("/login");
       return;
@@ -20,7 +21,7 @@ export default function ShoppingCart() {
   function removeItem(id) {
     const updated = cart.filter((item) => item.id !== id);
     setCart(updated);
-    localStorage.setItem("cart", JSON.stringify(updated));
+    saveCartItems(updated);
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -34,7 +35,7 @@ export default function ShoppingCart() {
       item.id === id ? { ...item, quantity: newQuantity } : item
     );
     setCart(updated);
-    localStorage.setItem("cart", JSON.stringify(updated));
+    saveCartItems(updated);
   }
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);

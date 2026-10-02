@@ -63,7 +63,7 @@ export default function Favorites() {
                 Adicione produtos aos favoritos clicando no coração
               </p>
               <a
-                href="/#product"
+                href="/#catalogo"
                 className="inline-block bg-[#002D72] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#003B99] transition-all"
               >
                 Ver Produtos

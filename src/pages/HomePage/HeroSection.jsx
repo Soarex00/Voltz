@@ -52,7 +52,7 @@ export default function HeroSection() {
           {/* Imagem */}
           <div
             className="relative flex justify-center md:justify-end 
-                w-[320px] md:w-[420px] lg:w-[480px] 
+                w-full max-w-[480px]
                 h-[260px] md:h-[380px] lg:h-[460px] overflow-hidden"
           >
             {images.map((img, i) => (
