@@ -10,12 +10,14 @@ export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
     senha: "",
+    manterConectado: false,
   });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.type === "checkbox" ? e.target.checked : e.target.value,
     });
   };
 
@@ -23,40 +25,23 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      {
-        /* Buscar usuário por email */
-      }
-      const response = await api.get(`/users?email=${formData.email}`);
-
-      if (response.data.length === 0) {
-        Swal.fire({
-          icon: "error",
-          title: "Usuário não encontrado",
-          text: "Email não cadastrado",
-          confirmButtonColor: "#2563eb",
-        });
-        return;
-      }
-
-      const user = response.data[0];
-
-      {
-        /* Verificar senha */
-      }
-      if (user.senha !== formData.senha) {
-        Swal.fire({
-          icon: "error",
-          title: "Senha incorreta",
-          text: "Tente novamente",
-          confirmButtonColor: "#2563eb",
-        });
-        return;
-      }
-
-      {
-        /* Salvar usuário no localStorage */
-      }
-      localStorage.setItem("user", JSON.stringify(user));
+      const response = await api.post("/auth/login", {
+        ...formData,
+        manterConectado: formData.manterConectado,
+      });
+      const { user, token } = response.data;
+      const storage = formData.manterConectado ? localStorage : sessionStorage;
+      storage.setItem("user", JSON.stringify(user));
+      storage.setItem("authToken", token);
+      (formData.manterConectado ? sessionStorage : localStorage).removeItem(
+        "user",
+      );
+      (formData.manterConectado ? sessionStorage : localStorage).removeItem(
+        "authToken",
+      );
+      if (formData.manterConectado && !user.isAdmin)
+        localStorage.setItem("voltz_cliente_id", user.id);
+      else localStorage.removeItem("voltz_cliente_id");
 
       {
         /* Sucesso */
@@ -85,7 +70,7 @@ export default function Login() {
       Swal.fire({
         icon: "error",
         title: "Erro",
-        text: "Tente novamente mais tarde",
+        text: error.response?.data?.mensagem || "Tente novamente mais tarde",
         confirmButtonColor: "#2563eb",
       });
     }
@@ -126,6 +111,18 @@ export default function Login() {
             className="border p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
           />
 
+          <label className="flex items-center gap-2 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              name="manterConectado"
+              checked={formData.manterConectado}
+              onChange={(e) =>
+                setFormData({ ...formData, manterConectado: e.target.checked })
+              }
+            />
+            Manter conectado neste dispositivo
+          </label>
+
           <button
             type="submit"
             className="bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
@@ -144,4 +141,3 @@ export default function Login() {
     </div>
   );
 }
-

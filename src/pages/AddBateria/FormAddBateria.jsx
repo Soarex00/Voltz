@@ -29,7 +29,6 @@ export default function FormAddBateria() {
         name: formData.name,
         price: Number(formData.price),
         vehicles: formData.vehicles.split(",").map((v) => v.trim()),
-        userReviews: [],
       };
 
       await api.post("/products", newBattery);
@@ -56,7 +55,7 @@ export default function FormAddBateria() {
         price: "",
         vehicles: "",
       });
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -160,4 +159,3 @@ export default function FormAddBateria() {
     </section>
   );
 }
-

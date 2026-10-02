@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getStoredUser } from "./utils/session";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2, ShoppingCart as CartIcon } from "lucide-react";
 import { getCartItems } from "./utils/addToCart";
@@ -8,7 +9,7 @@ export default function ShoppingCart() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = getStoredUser();
     if (!user) {
       navigate("/login");
       return;
@@ -31,7 +32,7 @@ export default function ShoppingCart() {
     }
 
     const updated = cart.map((item) =>
-      item.id === id ? { ...item, quantity: newQuantity } : item
+      item.id === id ? { ...item, quantity: newQuantity } : item,
     );
     setCart(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
@@ -142,4 +143,3 @@ export default function ShoppingCart() {
     </div>
   );
 }
-

@@ -42,24 +42,6 @@ export default function Register() {
     }
 
     try {
-      {
-        /* Verificar se o email já existe */
-      }
-      const checkEmail = await api.get(`/users?email=${formData.email}`);
-
-      if (checkEmail.data.length > 0) {
-        Swal.fire({
-          icon: "warning",
-          title: "Email já cadastrado",
-          text: "Este email já está em uso",
-          confirmButtonColor: "#2563eb",
-        });
-        return;
-      }
-
-      {
-        /* Criar objeto do novo usuário */
-      }
       const newUser = {
         nome: formData.nome,
         email: formData.email,
@@ -69,13 +51,8 @@ export default function Register() {
         cidade: formData.cidade,
         estado: formData.estado,
         senha: formData.senha,
-        DataCriacao: new Date().toISOString(),
       };
-
-      {
-        /* Salvar no db.json */
-      }
-      await api.post("/users", newUser);
+      await api.post("/auth/register", newUser);
 
       {
         /* Sucesso */
@@ -102,9 +79,9 @@ export default function Register() {
     } catch (error) {
       console.error("Erro ao cadastrar:", error);
       Swal.fire({
-        icon: "<error>",
+        icon: "error",
         title: "Erro ao cadastrar",
-        text: "Tente novamente mais tarde",
+        text: error.response?.data?.mensagem || "Tente novamente mais tarde",
         confirmButtonColor: "#2563eb",
       });
     }
@@ -318,4 +295,3 @@ export default function Register() {
     </div>
   );
 }
-

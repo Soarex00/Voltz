@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    "prettier-plugin-prisma",
+    "prettier-plugin-sql",
+    "prettier-plugin-toml"
+  ],
+  "language": "postgresql"
+}

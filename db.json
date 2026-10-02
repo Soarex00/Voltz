@@ -8,14 +8,7 @@
       "rating": 4,
       "reviews": 189,
       "price": 459,
-      "vehicles": [
-        "Onix",
-        "Onix Plus",
-        "Prisma",
-        "Celta",
-        "Montana",
-        "Cruze"
-      ],
+      "vehicles": ["Onix", "Onix Plus", "Prisma", "Celta", "Montana", "Cruze"],
       "userReviews": [
         {
           "name": "Ricardo",
@@ -39,12 +32,7 @@
       "rating": 0,
       "reviews": 86,
       "price": 360,
-      "vehicles": [
-        "HB20",
-        "HB20S",
-        "Kia Picanto",
-        "Renault Sandero"
-      ],
+      "vehicles": ["HB20", "HB20S", "Kia Picanto", "Renault Sandero"],
       "userReviews": []
     },
     {
@@ -127,14 +115,7 @@
       "rating": 0,
       "reviews": 156,
       "price": 589,
-      "vehicles": [
-        "A3",
-        "ARGO",
-        "BRAVO",
-        "AGILE",
-        "SPIN",
-        "HRV"
-      ],
+      "vehicles": ["A3", "ARGO", "BRAVO", "AGILE", "SPIN", "HRV"],
       "userReviews": []
     },
     {
@@ -145,14 +126,7 @@
       "rating": 0,
       "reviews": 234,
       "price": 614,
-      "vehicles": [
-        "Uno",
-        "Palio",
-        "Siena",
-        "Strada",
-        "Fiorino",
-        "Doblo"
-      ],
+      "vehicles": ["Uno", "Palio", "Siena", "Strada", "Fiorino", "Doblo"],
       "userReviews": [
         {
           "name": "Heitor Barbosa Hepp",
@@ -170,14 +144,7 @@
       "rating": 0,
       "reviews": 198,
       "price": 819,
-      "vehicles": [
-        "Corolla",
-        "Civic",
-        "Jetta",
-        "Passat",
-        "Fusion",
-        "Accord"
-      ],
+      "vehicles": ["Corolla", "Civic", "Jetta", "Passat", "Fusion", "Accord"],
       "userReviews": []
     },
     {
@@ -217,31 +184,5 @@
       "userReviews": []
     }
   ],
-  "users": [
-    {
-      "id": "051a",
-      "nome": "Heitor Barbosa Hepp",
-      "email": "heitor@hotmail.com",
-      "telefone": "53 999999999",
-      "dataNascimento": "2006-07-18",
-      "endereco": "Avenida Mimosa Rodrigues",
-      "cidade": "Pedro Osório",
-      "estado": "RS",
-      "senha": "123456",
-      "DataCriacao": "2025-11-23T00:40:26.864Z"
-    },
-    {
-      "id": "df3b",
-      "nome": "Administrador Voltz",
-      "email": "admin@admin.com",
-      "telefone": "53 999999999",
-      "dataNascimento": "2000-10-20",
-      "endereco": "Escritório Central Voltz",
-      "cidade": "Pelotas",
-      "estado": "RS",
-      "senha": "admin123",
-      "DataCriacao": "2025-11-15T00:40:26.864Z",
-      "isAdmin": true
-    }
-  ]
+  "users": []
 }

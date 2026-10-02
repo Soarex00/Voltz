@@ -5,23 +5,41 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "dev:api": "node --watch backend/server.js",
+    "dev:all": "concurrently -k \"npm run dev\" \"npm run dev:api\"",
+    "build": "prisma generate && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "api": "json-server --watch db.json --port 3001"
+    "api": "node --watch backend/server.js",
+    "start": "node backend/server.js",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "node backend/scripts/seed-products.js",
+    "admin:create": "node backend/scripts/create-admin.js",
+    "format": "prettier --write '**/*.{js,jsx,json,md,css,html,sql,prisma,yml,yaml,toml}'",
+    "format:check": "prettier --check '**/*.{js,jsx,json,md,css,html,sql,prisma,yml,yaml,toml}'"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "flowbite-react": "^0.12.10",
     "hook-form": "^0.0.1",
+    "jsonwebtoken": "^9.0.3",
     "lucide": "^0.553.0",
     "lucide-react": "^0.553.0",
+    "openai": "^7.27.0",
+    "pg": "^8.23.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.66.1",
     "react-router-dom": "^7.9.6",
-    "sweetalert2": "^11.26.3"
+    "sweetalert2": "^11.26.3",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -29,14 +47,24 @@
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^10.0.5",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
     "json-server": "^1.0.0-beta.3",
     "postcss": "^8.5.6",
+    "prettier": "^3.9.9",
+    "prettier-plugin-prisma": "^5.0.0",
+    "prettier-plugin-sql": "^0.20.0",
+    "prettier-plugin-toml": "^3.0.2",
+    "prisma": "^7.10.0",
     "tailwindcss": "^4.1.17",
+    "tsx": "^4.23.15",
     "vite": "^7.1.7"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.53.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.1.17"
   }
 }
-

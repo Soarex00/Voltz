@@ -6,6 +6,8 @@ import AddBateria from "./pages/AddBateria";
 import RegisterPage from "../src/Register";
 import ShoppingCart from "./ShoppingCart";
 import Favorites from "./Favorites";
+import MyOrders from "./pages/MyOrders";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   return (
@@ -21,8 +23,9 @@ export default function App() {
         <Route path="/carrinho" element={<ShoppingCart />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/pedidos" element={<MyOrders />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );
 }
-

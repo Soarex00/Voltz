@@ -2,6 +2,7 @@ import { ShoppingCart, Zap, Heart, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getFavorites } from "../utils/addToFavorites";
+import { getStoredUser } from "../utils/session";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function getCartItems() {
@@ -21,7 +22,7 @@ export default function Header() {
   }
   useEffect(() => {
     const checkAdmin = () => {
-      const userData = localStorage.getItem("user");
+      const userData = getStoredUser();
       if (userData) {
         const user = JSON.parse(userData);
         if (user.isAdmin === true) {
@@ -42,7 +43,7 @@ export default function Header() {
   }
   useEffect(() => {
     const checkLogin = () => {
-      const userData = localStorage.getItem("user");
+      const userData = getStoredUser();
       if (userData) {
         setIsLoggedIn(true);
         setUser(JSON.parse(userData));
@@ -69,7 +70,7 @@ export default function Header() {
   }
   useEffect(() => {
     const updateCartCount = () => {
-      const userData = localStorage.getItem("user");
+      const userData = getStoredUser();
       if (!userData) {
         setCartCount(0);
         return;
@@ -78,7 +79,7 @@ export default function Header() {
       const cartItems = getCartItems();
       const totalQuantity = cartItems.reduce(
         (total, item) => total + item.quantity,
-        0
+        0,
       );
       setCartCount(totalQuantity);
     };
@@ -108,6 +109,10 @@ export default function Header() {
   }
   const handleLogout = () => {
     localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+    localStorage.removeItem("authToken");
+    sessionStorage.removeItem("authToken");
+    localStorage.removeItem("voltz_cliente_id");
     setIsLoggedIn(false);
     setUser(null);
     window.location.reload();
@@ -210,6 +215,22 @@ export default function Header() {
                     Sair
                   </button>
 
+                  {!isAdmin && (
+                    <Link
+                      to="/pedidos"
+                      className="text-sm font-medium text-blue-700"
+                    >
+                      Meus pedidos
+                    </Link>
+                  )}
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      className="text-sm font-medium text-blue-700"
+                    >
+                      Painel
+                    </Link>
+                  )}
                   {isAdmin && (
                     <>
                       <Link
@@ -305,6 +326,22 @@ export default function Header() {
                       Sair
                     </button>
 
+                    {!isAdmin && (
+                      <Link
+                        to="/pedidos"
+                        className="text-sm font-medium text-blue-700 text-center"
+                      >
+                        Meus pedidos
+                      </Link>
+                    )}
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="text-sm font-medium text-blue-700 text-center"
+                      >
+                        Painel
+                      </Link>
+                    )}
                     {isAdmin && (
                       <>
                         <Link
@@ -325,4 +362,3 @@ export default function Header() {
     </header>
   );
 }
-

@@ -5,6 +5,21 @@ import { addToCart } from "../utils/addToCart";
 import { useNavigate } from "react-router-dom";
 import { addToFavorites, isFavorite } from "../utils/addToFavorites";
 import Swal from "sweetalert2";
+import { getStoredUser } from "../utils/session";
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[character],
+  );
+}
 
 export default function ProductCardFilter({ products: productsProp }) {
   const [products, setProducts] = useState(productsProp || []);
@@ -13,7 +28,7 @@ export default function ProductCardFilter({ products: productsProp }) {
   const navigate = useNavigate();
 
   function handleAddToCart(produto) {
-    const user = localStorage.getItem("user");
+    const user = getStoredUser();
     if (!user) {
       Swal.fire({
         title: "Login necessário",
@@ -46,7 +61,7 @@ export default function ProductCardFilter({ products: productsProp }) {
   }
   useEffect(() => {
     const checkAdmin = () => {
-      const userData = localStorage.getItem("user");
+      const userData = getStoredUser();
       if (userData) {
         const user = JSON.parse(userData);
         if (user.isAdmin === true) {
@@ -80,7 +95,7 @@ export default function ProductCardFilter({ products: productsProp }) {
 
         // Remove o produto do estado local
         setProducts((prevProducts) =>
-          prevProducts.filter((produto) => produto.id !== id)
+          prevProducts.filter((produto) => produto.id !== id),
         );
 
         Swal.fire({
@@ -142,7 +157,7 @@ export default function ProductCardFilter({ products: productsProp }) {
 
     const soma = avaliacoes.reduce(
       (total, avaliacao) => total + avaliacao.rating,
-      0
+      0,
     );
     const media = soma / avaliacoes.length;
 
@@ -150,7 +165,7 @@ export default function ProductCardFilter({ products: productsProp }) {
   }
 
   async function adicionarAvaliacao(produto) {
-    const user = localStorage.getItem("user");
+    const user = getStoredUser();
     if (!user) {
       Swal.fire({
         title: "Login necessário",
@@ -185,7 +200,7 @@ export default function ProductCardFilter({ products: productsProp }) {
   }
 
   function criarFormularioAvaliacao() {
-    const userData = localStorage.getItem("user");
+    const userData = getStoredUser();
     const userName = userData ? JSON.parse(userData).nome : "";
     return `
       <div style="text-align: left;">
@@ -193,7 +208,7 @@ export default function ProductCardFilter({ products: productsProp }) {
           Seu nome:
         </label>
         <input type="text" id="name" class="swal2-input" placeholder="Digite seu nome" 
-          style="width: 100%; margin: 0 0 20px 0; border: 2px solid #002D72; border-radius: 8px; padding: 10px;" value="${userName}">
+          style="width: 100%; margin: 0 0 20px 0; border: 2px solid #002D72; border-radius: 8px; padding: 10px;" value="${escapeHtml(userName)}">
         
         <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #002D72;">
           Sua nota (1 a 5):
@@ -206,7 +221,7 @@ export default function ProductCardFilter({ products: productsProp }) {
               style="background: none; border: 2px solid #002D72; border-radius: 8px; padding: 10px 15px; cursor: pointer; font-size: 18px; transition: all 0.3s;">
               ${numero} ⭐
             </button>
-          `
+          `,
             )
             .join("")}
         </div>
@@ -263,19 +278,10 @@ export default function ProductCardFilter({ products: productsProp }) {
 
   async function salvarAvaliacao(produto, dados) {
     try {
-      const novaAvaliacao = {
-        name: dados.name,
+      await api.post(`/products/${produto.id}/reviews`, {
         rating: dados.rating,
         comment: dados.comment,
-        date: new Date().toISOString(),
-      };
-
-      const produtoAtualizado = {
-        ...produto,
-        userReviews: [...(produto.userReviews || []), novaAvaliacao],
-      };
-
-      await api.put(`/products/${produto.id}`, produtoAtualizado);
+      });
 
       await Swal.fire({
         title: "Avaliação enviada!",
@@ -372,7 +378,7 @@ export default function ProductCardFilter({ products: productsProp }) {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <div>
             <div style="color: #002D72; font-weight: bold; margin-bottom: 5px;">
-              ${nomeUsuario}
+              ${escapeHtml(nomeUsuario)}
             </div>
             <div style="color: #002D72; font-weight: 600;">
               ${estrelasPreenchidas}${estrelasVazias}
@@ -382,7 +388,7 @@ export default function ProductCardFilter({ products: productsProp }) {
             ${dataFormatada}
           </div>
         </div>
-        <div style="color: #374151;">${avaliacao.comment}</div>
+        <div style="color: #374151;">${escapeHtml(avaliacao.comment)}</div>
       </div>
     `;
   }
@@ -506,4 +512,3 @@ export default function ProductCardFilter({ products: productsProp }) {
     </section>
   );
 }
-

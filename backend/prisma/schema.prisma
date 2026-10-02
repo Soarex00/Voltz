@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Cliente {
+  id             String    @id @default(uuid())
+  nome           String
+  email          String    @unique
+  senha          String
+  telefone       String?
+  dataNascimento DateTime? @map("data_nascimento")
+  endereco       String?
+  cidade         String?
+  estado         String?
+  createdAt      DateTime  @default(now()) @map("created_at")
+  pedidos        Pedido[]
+
+  @@map("clientes")
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  nome      String
+  email     String   @unique
+  senha     String
+  createdAt DateTime @default(now()) @map("created_at")
+  pedidos   Pedido[]
+
+  @@map("admins")
+}
+
+model Produto {
+  id          String   @id @default(uuid())
+  image       String
+  model       String
+  name        String
+  price       Decimal  @db.Decimal(10, 2)
+  rating      Float?
+  reviews     Int?
+  userReviews Json     @default("[]") @map("user_reviews")
+  vehicles    String[] @default([])
+  destaque    Boolean  @default(false)
+  ativo       Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  pedidos     Pedido[]
+
+  @@map("produtos")
+}
+
+model Pedido {
+  id            String   @id @default(uuid())
+  clienteId     String   @map("cliente_id")
+  produtoId     String   @map("produto_id")
+  adminId       String?  @map("admin_id")
+  veiculo       String
+  endereco      String
+  quantidade    Int      @default(1)
+  valorUnitario Decimal  @map("valor_unitario") @db.Decimal(10, 2)
+  status        String   @default("PENDENTE")
+  respostaAdmin String?  @map("resposta_admin")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  cliente Cliente @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  produto Produto @relation(fields: [produtoId], references: [id], onDelete: Restrict)
+  admin   Admin?  @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([clienteId, createdAt])
+  @@index([status])
+  @@map("pedidos")
+}

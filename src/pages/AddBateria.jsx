@@ -13,4 +13,3 @@ function AddBateria() {
 }
 
 export default AddBateria;
-

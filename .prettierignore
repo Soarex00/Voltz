@@ -1,0 +1,4 @@
+node_modules
+.DS_Store
+dist
+.flowbite-react/class-list.json

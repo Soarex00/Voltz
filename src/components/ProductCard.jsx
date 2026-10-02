@@ -1,19 +1,35 @@
 import { ShoppingCart, Heart, Star, MessageSquare, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../services/api";
 import { addToCart } from "../utils/addToCart";
 import { useNavigate } from "react-router-dom";
 import { addToFavorites, isFavorite } from "../utils/addToFavorites";
 import Swal from "sweetalert2";
+import { getStoredUser } from "../utils/session";
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[character],
+  );
+}
 
 export default function ProductCard() {
   const [products, setProducts] = useState([]);
+  const [featuredOnly, setFeaturedOnly] = useState(false);
   const [favorites, setFavorites] = useState({});
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   function handleAddToCart(produto) {
-    const user = localStorage.getItem("user");
+    const user = getStoredUser();
     if (!user) {
       Swal.fire({
         title: "Login necessário",
@@ -82,7 +98,7 @@ export default function ProductCard() {
   }
   useEffect(() => {
     const checkAdmin = () => {
-      const userData = localStorage.getItem("user");
+      const userData = getStoredUser();
       if (userData) {
         const user = JSON.parse(userData);
         if (user.isAdmin === true) {
@@ -98,13 +114,11 @@ export default function ProductCard() {
     checkAdmin();
   }, []);
 
-  useEffect(() => {
-    carregarProdutos();
-  }, []);
-
-  async function carregarProdutos() {
+  const carregarProdutos = useCallback(async () => {
     try {
-      const response = await api.get("/products");
+      const response = await api.get("/products", {
+        params: featuredOnly ? { destaque: "true" } : {},
+      });
       setProducts(response.data);
 
       const statusFavoritos = {};
@@ -115,7 +129,11 @@ export default function ProductCard() {
     } catch (error) {
       console.log("Erro ao carregar produtos:", error);
     }
-  }
+  }, [featuredOnly]);
+
+  useEffect(() => {
+    carregarProdutos();
+  }, [carregarProdutos]);
 
   function alternarFavorito(produto) {
     const foiAdicionado = addToFavorites(produto);
@@ -130,7 +148,7 @@ export default function ProductCard() {
 
     const soma = avaliacoes.reduce(
       (total, avaliacao) => total + avaliacao.rating,
-      0
+      0,
     );
     const media = soma / avaliacoes.length;
 
@@ -138,7 +156,7 @@ export default function ProductCard() {
   }
 
   async function adicionarAvaliacao(produto) {
-    const user = localStorage.getItem("user");
+    const user = getStoredUser();
     if (!user) {
       Swal.fire({
         title: "Login necessário",
@@ -173,14 +191,14 @@ export default function ProductCard() {
   }
 
   function criarFormularioAvaliacao() {
-    const userData = localStorage.getItem("user");
+    const userData = getStoredUser();
     const userName = userData ? JSON.parse(userData).nome : "";
     return `
       <div style="text-align: left;">
         <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #002D72;">
           Seu nome:
         </label>
-        <input type="text" id="name" class="swal2-input" placeholder="Digite seu nome" value="${userName}"
+        <input type="text" id="name" class="swal2-input" placeholder="Digite seu nome" value="${escapeHtml(userName)}"
           style="width: 100%; margin: 0 0 20px 0; border: 2px solid #002D72; border-radius: 8px; padding: 10px;">
         
         <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #002D72;">
@@ -194,7 +212,7 @@ export default function ProductCard() {
               style="background: none; border: 2px solid #002D72; border-radius: 8px; padding: 10px 15px; cursor: pointer; font-size: 18px; transition: all 0.3s;">
               ${numero} ⭐
             </button>
-          `
+          `,
             )
             .join("")}
         </div>
@@ -251,19 +269,10 @@ export default function ProductCard() {
 
   async function salvarAvaliacao(produto, dados) {
     try {
-      const novaAvaliacao = {
-        name: dados.name,
+      await api.post(`/products/${produto.id}/reviews`, {
         rating: dados.rating,
         comment: dados.comment,
-        date: new Date().toISOString(),
-      };
-
-      const produtoAtualizado = {
-        ...produto,
-        userReviews: [...(produto.userReviews || []), novaAvaliacao],
-      };
-
-      await api.put(`/products/${produto.id}`, produtoAtualizado);
+      });
 
       await Swal.fire({
         title: "Avaliação enviada!",
@@ -360,7 +369,7 @@ export default function ProductCard() {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <div>
             <div style="color: #002D72; font-weight: bold; margin-bottom: 5px;">
-              ${nomeUsuario}
+              ${escapeHtml(nomeUsuario)}
             </div>
             <div style="color: #002D72; font-weight: 600;">
               ${estrelasPreenchidas}${estrelasVazias}
@@ -370,7 +379,7 @@ export default function ProductCard() {
             ${dataFormatada}
           </div>
         </div>
-        <div style="color: #374151;">${avaliacao.comment}</div>
+        <div style="color: #374151;">${escapeHtml(avaliacao.comment)}</div>
       </div>
     `;
   }
@@ -385,6 +394,14 @@ export default function ProductCard() {
           <p className="text-lg text-gray-600">
             Escolha a melhor bateria para o seu veículo
           </p>
+          <button
+            onClick={() => setFeaturedOnly((value) => !value)}
+            className="mt-4 rounded-full border border-blue-700 px-5 py-2 text-blue-700 hover:bg-blue-50"
+          >
+            {featuredOnly
+              ? "Ver catálogo completo"
+              : "Ver baterias em destaque"}
+          </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -502,5 +519,3 @@ export default function ProductCard() {
     </section>
   );
 }
-
-

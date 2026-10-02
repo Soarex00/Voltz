@@ -9,33 +9,67 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { api } from "../services/api";
 
 function Checkout() {
   const navigate = useNavigate();
   const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  const [veiculo, setVeiculo] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const calculateTotal = () => {
     return cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
-      0
+      0,
     );
   };
 
-  const handleWhatsAppContact = () => {
+  const handleWhatsAppContact = async () => {
+    if (!veiculo.trim() || !endereco.trim()) {
+      window.alert("Informe o veículo e o endereço para registrar o pedido.");
+      return;
+    }
+    setSaving(true);
+    try {
+      await api.post("/orders", {
+        items: cartItems.map((item) => ({
+          productId: String(item.id),
+          quantity: item.quantity,
+        })),
+        veiculo,
+        endereco,
+      });
+    } catch (error) {
+      window.alert(
+        error.response?.data?.mensagem ||
+          "Não foi possível registrar o pedido. Entre novamente na sua conta.",
+      );
+      setSaving(false);
+      return;
+    }
+    setSaving(false);
     const message = `Olá! Gostaria de finalizar minha compra:\n\n${cartItems
       .map(
         (item) =>
           `${item.quantity}x ${item.name} - R$ ${(
             item.price * item.quantity
-          ).toFixed(2)}`
+          ).toFixed(2)}`,
       )
       .join("\n")}\n\nTotal: R$ ${calculateTotal().toFixed(2)}`;
 
     const phoneNumber = "5553999998888";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      message
+      message,
     )}`;
-    window.open(whatsappUrl, "_blank");
+    const whatsappWindow = window.open(
+      whatsappUrl,
+      "_blank",
+      "noopener,noreferrer",
+    );
+    if (!whatsappWindow) window.location.assign(whatsappUrl);
+    localStorage.removeItem("cart");
   };
 
   const steps = [
@@ -169,13 +203,41 @@ function Checkout() {
                         </div>
                       </div>
 
+                      <div className="grid sm:grid-cols-2 gap-4 mb-6">
+                        <label className="text-sm font-medium">
+                          Veículo
+                          <input
+                            value={veiculo}
+                            onChange={(e) => setVeiculo(e.target.value)}
+                            placeholder="Modelo e ano"
+                            className="mt-1 w-full border rounded-lg p-3"
+                            required
+                          />
+                        </label>
+                        <label className="text-sm font-medium">
+                          Endereço de entrega
+                          <input
+                            value={endereco}
+                            onChange={(e) => setEndereco(e.target.value)}
+                            placeholder="Rua, número, cidade"
+                            className="mt-1 w-full border rounded-lg p-3"
+                            required
+                          />
+                        </label>
+                      </div>
+
                       {/* Botão WhatsApp */}
                       <button
                         onClick={handleWhatsAppContact}
+                        disabled={saving}
                         className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
                       >
                         <MessageCircle className="h-6 w-6" />
-                        <span className="text-lg">Finalizar pelo WhatsApp</span>
+                        <span className="text-lg">
+                          {saving
+                            ? "Salvando pedido…"
+                            : "Registrar pedido e continuar pelo WhatsApp"}
+                        </span>
                       </button>
 
                       <p className="text-center text-sm text-gray-600 mt-4">
@@ -244,4 +306,3 @@ function Checkout() {
 }
 
 export default Checkout;
-
