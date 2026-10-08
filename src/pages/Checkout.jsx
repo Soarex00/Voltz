@@ -1,13 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import {
-  ShoppingCart,
-  CheckCircle,
-  MessageCircle,
-  Clock,
-  Package,
-  CreditCard,
-} from "lucide-react";
+import { ShoppingCart, CheckCircle, Clock, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { api } from "../services/api";
@@ -26,7 +19,7 @@ function Checkout() {
     );
   };
 
-  const handleWhatsAppContact = async () => {
+  const handleSubmitOrder = async () => {
     if (!veiculo.trim() || !endereco.trim()) {
       window.alert("Informe o veículo e o endereço para registrar o pedido.");
       return;
@@ -50,26 +43,8 @@ function Checkout() {
       return;
     }
     setSaving(false);
-    const message = `Olá! Gostaria de finalizar minha compra:\n\n${cartItems
-      .map(
-        (item) =>
-          `${item.quantity}x ${item.name} - R$ ${(
-            item.price * item.quantity
-          ).toFixed(2)}`,
-      )
-      .join("\n")}\n\nTotal: R$ ${calculateTotal().toFixed(2)}`;
-
-    const phoneNumber = "5553999998888";
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      message,
-    )}`;
-    const whatsappWindow = window.open(
-      whatsappUrl,
-      "_blank",
-      "noopener,noreferrer",
-    );
-    if (!whatsappWindow) window.location.assign(whatsappUrl);
     localStorage.removeItem("cart");
+    navigate("/pedidos");
   };
 
   const steps = [
@@ -79,14 +54,14 @@ function Checkout() {
       description: "Seus produtos selecionados",
     },
     {
-      icon: MessageCircle,
-      title: "Contato",
-      description: "Fale conosco via WhatsApp",
+      icon: CheckCircle,
+      title: "Pedido",
+      description: "Registro no sistema",
     },
     {
-      icon: CreditCard,
-      title: "Pagamento",
-      description: "Confirme a forma de pagamento",
+      icon: Clock,
+      title: "Acompanhamento",
+      description: "Veja o status em Meus pedidos",
     },
     {
       icon: Package,
@@ -107,7 +82,7 @@ function Checkout() {
                 Finalize sua Compra
               </h1>
               <p className="text-lg text-white/90">
-                Entre em contato conosco pelo WhatsApp para concluir seu pedido
+                Informe os dados para registrar o pedido no sistema
               </p>
             </div>
           </div>
@@ -226,23 +201,21 @@ function Checkout() {
                         </label>
                       </div>
 
-                      {/* Botão WhatsApp */}
+                      {/* Finalizar pedido no sistema */}
                       <button
-                        onClick={handleWhatsAppContact}
+                        onClick={handleSubmitOrder}
                         disabled={saving}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
+                        className="w-full bg-[#002D72] hover:bg-[#001a45] text-white font-bold py-4 px-6 rounded-xl transition-colors duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
                       >
-                        <MessageCircle className="h-6 w-6" />
+                        <CheckCircle className="h-6 w-6" />
                         <span className="text-lg">
-                          {saving
-                            ? "Salvando pedido…"
-                            : "Registrar pedido e continuar pelo WhatsApp"}
+                          {saving ? "Salvando pedido…" : "Finalizar pedido"}
                         </span>
                       </button>
 
                       <p className="text-center text-sm text-gray-600 mt-4">
-                        Ao clicar, você será redirecionado para o WhatsApp onde
-                        nossa equipe irá auxiliá-lo com o processo de compra
+                        O pedido será registrado como pendente e poderá ser
+                        acompanhado na página “Meus pedidos”.
                       </p>
                     </>
                   ) : (
@@ -273,7 +246,7 @@ function Checkout() {
                     Compra Segura
                   </h4>
                   <p className="text-sm text-gray-600">
-                    Atendimento personalizado via WhatsApp
+                    Acompanhe o status em “Meus pedidos”
                   </p>
                 </div>
                 <div className="bg-white rounded-xl shadow-md p-6 text-center">
