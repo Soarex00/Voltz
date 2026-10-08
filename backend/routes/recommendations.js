@@ -29,7 +29,7 @@ recommendationsRouter.get("/products", limit, async (req, res) => {
   let parsed;
   try {
     const result = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || "gemini-3.8-flash",
+      model: process.env.GEMINI_MODEL || "gemini-3.1-flash-lite",
       contents: JSON.stringify({ veiculo: vehicle, catalogo: catalog }),
       config: {
         systemInstruction:

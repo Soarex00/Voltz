@@ -14,7 +14,7 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-3.8-flash
+        value: gemini-3.1-flash-lite
       - key: ADMIN_NAME
         value: Administrador Voltz
       - key: ADMIN_EMAIL

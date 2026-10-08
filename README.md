@@ -4,7 +4,7 @@ A loja Voltz existente foi conectada a uma API Express, Prisma 7 e PostgreSQL. O
 
 ## Rodar localmente
 
-1. Copie `.env.example` para `.env` e configure `DATABASE_URL`, `JWT_SECRET` (32+ caracteres) e as credenciais do administrador. Para habilitar recomendação por IA, configure `GEMINI_API_KEY`; a integração usa o Gemini Flash e depende da cota gratuita disponível na sua conta Google AI Studio.
+1. Copie `.env.example` para `.env` e configure `DATABASE_URL`, `JWT_SECRET` (32+ caracteres) e as credenciais do administrador. Para habilitar recomendação por IA, configure `GEMINI_API_KEY`; a integração usa o Gemini 3.1 Flash-Lite e depende dos limites da cota gratuita disponível na sua conta Google AI Studio.
 2. Instale dependências: `npm ci`.
 3. Aplique migrations: `npm run db:deploy`.
 4. Importe os produtos Voltz: `npm run db:seed`.
