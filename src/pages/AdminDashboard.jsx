@@ -3,16 +3,21 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { api } from "../services/api";
 const statuses = [
-  "PENDENTE",
-  "CONFIRMADO",
-  "EM_PREPARO",
-  "ENVIADO",
-  "CONCLUIDO",
-  "CANCELADO",
+  { value: "PENDENTE", label: "Pendente" },
+  { value: "CONFIRMADO", label: "Confirmado" },
+  { value: "EM_PREPARO", label: "Em preparo" },
+  { value: "ENVIADO", label: "Saiu para entrega" },
+  { value: "CONCLUIDO", label: "Entregue" },
+  { value: "CANCELADO", label: "Cancelado" },
 ];
+const statusLabels = Object.fromEntries(
+  statuses.map(({ value, label }) => [value, label]),
+);
 export default function AdminDashboard() {
   const [summary, setSummary] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [selectedStatuses, setSelectedStatuses] = useState({});
+  const [updatingStatuses, setUpdatingStatuses] = useState({});
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
   const load = useCallback(async () => {
@@ -24,6 +29,9 @@ export default function AdminDashboard() {
       ]);
       setSummary(a.data);
       setOrders(b.data);
+      setSelectedStatuses(
+        Object.fromEntries(b.data.map((order) => [order.id, order.status])),
+      );
       setProducts(c.data);
     } catch (e) {
       setError(
@@ -40,13 +48,32 @@ export default function AdminDashboard() {
       order.respostaAdmin || "",
     );
     if (respostaAdmin === null) return;
-    const status = window.prompt(
-      `Status (${statuses.join(", ")}):`,
-      order.status,
-    );
-    if (!statuses.includes(status)) return window.alert("Status inválido.");
-    await api.patch(`/admin/orders/${order.id}`, { status, respostaAdmin });
+    await api.patch(`/admin/orders/${order.id}`, {
+      status: order.status,
+      respostaAdmin,
+    });
     await load();
+  }
+  async function updateStatus(order, status) {
+    setSelectedStatuses((current) => ({ ...current, [order.id]: status }));
+    setUpdatingStatuses((current) => ({ ...current, [order.id]: true }));
+    try {
+      await api.patch(`/admin/orders/${order.id}`, {
+        status,
+        respostaAdmin: order.respostaAdmin || "",
+      });
+      await load();
+    } catch (e) {
+      setSelectedStatuses((current) => ({
+        ...current,
+        [order.id]: order.status,
+      }));
+      window.alert(
+        e.response?.data?.mensagem || "Não foi possível atualizar o status.",
+      );
+    } finally {
+      setUpdatingStatuses((current) => ({ ...current, [order.id]: false }));
+    }
   }
   async function editProduct(product) {
     const name = window.prompt("Nome da bateria:", product.name);
@@ -147,12 +174,32 @@ export default function AdminDashboard() {
                       {o.cliente.email} · {o.veiculo} · {o.endereco}
                     </p>
                     <p>
-                      Status: {o.status} · Total: R${" "}
+                      Status: {statusLabels[o.status] || o.status} · Total: R${" "}
                       {(Number(o.valorUnitario) * o.quantidade).toFixed(2)}
                     </p>
                     {o.respostaAdmin && <p>Resposta: {o.respostaAdmin}</p>}
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="flex items-center gap-2 text-sm">
+                      Status
+                      <select
+                        value={selectedStatuses[o.id] || o.status}
+                        onChange={(event) =>
+                          updateStatus(o, event.target.value)
+                        }
+                        disabled={updatingStatuses[o.id]}
+                        className="rounded border px-3 py-2 disabled:opacity-50"
+                      >
+                        {statuses.map((status) => (
+                          <option key={status.value} value={status.value}>
+                            {status.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    {updatingStatuses[o.id] && (
+                      <span className="text-sm text-gray-500">Salvando…</span>
+                    )}
                     <a
                       className="px-4 py-2 rounded border text-blue-800"
                       href={`mailto:${encodeURIComponent(o.cliente.email)}?subject=${encodeURIComponent(`Atualização do pedido ${o.id}`)}&body=${encodeURIComponent(o.respostaAdmin || `Olá ${o.cliente.nome}, seu pedido está ${o.status}.`)}`}
@@ -163,7 +210,7 @@ export default function AdminDashboard() {
                       onClick={() => respond(o)}
                       className="px-4 py-2 rounded bg-blue-700 text-white"
                     >
-                      Responder / atualizar
+                      Responder cliente
                     </button>
                     <button
                       onClick={() => remove(o.id)}
