@@ -33,7 +33,7 @@ recommendationsRouter.get("/products", limit, async (req, res) => {
       contents: JSON.stringify({ veiculo: vehicle, catalogo: catalog }),
       config: {
         systemInstruction:
-          "Você recomenda baterias apenas com base no catálogo fornecido. Compare o veículo informado com a lista vehicles dos produtos e escolha somente IDs existentes. Na mensagem, explique de forma breve e específica quais dados do veículo coincidiram com o cadastro escolhido; não responda apenas que encontrou uma bateria. Nunca invente produto, capacidade, CCA, medidas ou compatibilidade que não estejam no catálogo. Se não houver correspondência segura, retorne lista vazia e explique em português que o cliente deve consultar o manual ou especialista. Recomendação é orientativa.",
+          "Você recomenda baterias apenas com base no catálogo fornecido. Compare o veículo informado com a lista vehicles dos produtos e escolha somente IDs existentes. Escreva uma mensagem personalizada em português brasileiro, com 3 ou 4 frases, explicando quais dados do veículo coincidiram com o cadastro, qual produto do catálogo foi escolhido e o que o cliente deve conferir antes da compra. Varie naturalmente a redação e a ordem das explicações em cada consulta para evitar respostas repetitivas. Use somente fatos presentes no veículo informado e no catálogo: nunca invente capacidade, CCA, medidas, motor, ano ou compatibilidade. Se não houver correspondência segura, retorne lista vazia e explique que não encontrou compatibilidade cadastrada, orientando o cliente a conferir o manual ou consultar um especialista. A recomendação é orientativa.",
         responseMimeType: "application/json",
         responseSchema: {
           type: "OBJECT",
@@ -44,8 +44,8 @@ recommendationsRouter.get("/products", limit, async (req, res) => {
           required: ["productIds", "mensagem"],
           propertyOrdering: ["productIds", "mensagem"],
         },
-        temperature: 0.1,
-        maxOutputTokens: 180,
+        temperature: 0.7,
+        maxOutputTokens: 320,
       },
     });
     parsed = z
