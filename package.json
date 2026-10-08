@@ -19,6 +19,7 @@
     "format:check": "prettier --check '**/*.{js,jsx,json,md,css,html,sql,prisma,yml,yaml,toml}'"
   },
   "dependencies": {
+    "@google/genai": "^2.28.0",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@tailwindcss/vite": "^4.1.17",
@@ -32,7 +33,6 @@
     "jsonwebtoken": "^9.0.3",
     "lucide": "^0.553.0",
     "lucide-react": "^0.553.0",
-    "openai": "^7.27.0",
     "pg": "^8.23.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

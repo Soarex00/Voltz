@@ -4,7 +4,7 @@ A loja Voltz existente foi conectada a uma API Express, Prisma 7 e PostgreSQL. O
 
 ## Rodar localmente
 
-1. Copie `.env.example` para `.env` e configure `DATABASE_URL`, `JWT_SECRET` (32+ caracteres) e as credenciais do administrador. Para habilitar recomendação por IA, configure `OPENAI_API_KEY`.
+1. Copie `.env.example` para `.env` e configure `DATABASE_URL`, `JWT_SECRET` (32+ caracteres) e as credenciais do administrador. Para habilitar recomendação por IA, configure `GEMINI_API_KEY`; a integração usa o Gemini Flash e depende da cota gratuita disponível na sua conta Google AI Studio.
 2. Instale dependências: `npm ci`.
 3. Aplique migrations: `npm run db:deploy`.
 4. Importe os produtos Voltz: `npm run db:seed`.
@@ -42,7 +42,7 @@ Rotas marcadas admin exigem JWT de administrador. `/orders` exige JWT do cliente
 ## Roteiro rápido de apresentação
 
 1. Abra a home: mostre catálogo e filtro “Em destaque”.
-2. Pesquise um carro na área de IA e mostre os produtos retornados. Explique que a API envia à OpenAI somente o modelo informado e os produtos/veículos do catálogo; a resposta pode escolher apenas IDs existentes. A compatibilidade é orientativa.
+2. Pesquise um carro na área de IA e mostre os produtos retornados. Explique que a API envia ao Gemini somente o modelo informado e os produtos/veículos do catálogo; a resposta pode escolher apenas IDs existentes. A compatibilidade é orientativa.
 3. Cadastre um cliente e entre. Adicione uma bateria ao carrinho; no checkout informe veículo e endereço. A API cria o pedido no PostgreSQL antes de abrir WhatsApp.
 4. Abra “Meus pedidos” para mostrar o status e a resposta.
 5. Entre com a conta admin configurada no `.env`; no painel mostre totais, edite/cadastre produto, responda e altere status do pedido.
@@ -50,4 +50,4 @@ Rotas marcadas admin exigem JWT de administrador. `/orders` exige JWT do cliente
 
 ## Publicação
 
-`render.yaml` prepara um serviço Render que serve o build React e a API no mesmo domínio. Configure os segredos indicados pelo Render e use a mesma base PostgreSQL. Após publicar, aplique migrations e seed uma vez e execute `npm run admin:create` com os dados do administrador. A chave OpenAI deve ser cadastrada como segredo do serviço, nunca no frontend.
+`render.yaml` prepara um serviço Render que serve o build React e a API no mesmo domínio. Configure os segredos indicados pelo Render e use a mesma base PostgreSQL. Após publicar, aplique migrations e seed uma vez e execute `npm run admin:create` com os dados do administrador. A chave Gemini (`GEMINI_API_KEY`) deve ser cadastrada como segredo do serviço, nunca no frontend.

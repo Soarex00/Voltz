@@ -1,5 +1,5 @@
+import { GoogleGenAI } from "@google/genai";
 import { Router } from "express";
-import OpenAI from "openai";
 import { rateLimit } from "express-rate-limit";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
@@ -15,42 +15,57 @@ recommendationsRouter.get("/products", limit, async (req, res) => {
   const { vehicle } = z
     .object({ vehicle: z.string().trim().min(2).max(160) })
     .parse(req.query);
-  if (!process.env.OPENAI_API_KEY)
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey)
     return res.status(503).json({
       mensagem:
-        "Configure OPENAI_API_KEY no ambiente do servidor para ativar a recomendação por IA.",
+        "Configure GEMINI_API_KEY no ambiente do servidor para ativar a recomendação por IA.",
     });
   const catalog = await prisma.produto.findMany({
     where: { ativo: true },
     select: { id: true, name: true, model: true, vehicles: true },
   });
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const result = await client.responses.create({
-    model: process.env.OPENAI_MODEL || "gpt-6-luna",
-    reasoning: { effort: "none" },
-    max_output_tokens: 180,
-    store: false,
-    instructions:
-      "Você recomenda baterias apenas com base no catálogo fornecido. Considere a correspondência do veículo com a lista vehicles. Nunca invente produto, capacidade ou compatibilidade. Se não houver correspondência segura, retorne lista vazia e explique em português que o cliente deve consultar o manual ou especialista. Recomendação é orientativa.",
-    input: JSON.stringify({ veiculo: vehicle, catalogo: catalog }),
-    text: {
-      format: {
-        type: "json_schema",
-        name: "recomendacao_bateria",
-        strict: true,
-        schema: {
-          type: "object",
+  const ai = new GoogleGenAI({ apiKey });
+  let parsed;
+  try {
+    const result = await ai.models.generateContent({
+      model: process.env.GEMINI_MODEL || "gemini-3.8-flash",
+      contents: JSON.stringify({ veiculo: vehicle, catalogo: catalog }),
+      config: {
+        systemInstruction:
+          "Você recomenda baterias apenas com base no catálogo fornecido. Considere a correspondência do veículo com a lista vehicles. Nunca invente produto, capacidade ou compatibilidade. Se não houver correspondência segura, retorne lista vazia e explique em português que o cliente deve consultar o manual ou especialista. Recomendação é orientativa.",
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
           properties: {
-            productIds: { type: "array", items: { type: "string" } },
-            mensagem: { type: "string" },
+            productIds: { type: "ARRAY", items: { type: "STRING" } },
+            mensagem: { type: "STRING" },
           },
           required: ["productIds", "mensagem"],
-          additionalProperties: false,
+          propertyOrdering: ["productIds", "mensagem"],
         },
+        temperature: 0.1,
+        maxOutputTokens: 180,
       },
-    },
-  });
-  const parsed = JSON.parse(result.output_text);
+    });
+    parsed = z
+      .object({
+        productIds: z.array(z.string()),
+        mensagem: z.string(),
+      })
+      .parse(JSON.parse(result.text || ""));
+  } catch (error) {
+    const status = Number(error?.status || error?.code);
+    if (status === 429)
+      return res.status(429).json({
+        mensagem:
+          "A cota gratuita da recomendação por IA foi atingida. Tente novamente mais tarde.",
+      });
+    console.error("Falha ao consultar Gemini:", status || "sem status");
+    return res.status(502).json({
+      mensagem: "A recomendação por IA está indisponível no momento.",
+    });
+  }
   const allowedIds = new Set(catalog.map((p) => p.id));
   const ids = [...new Set(parsed.productIds)].filter((id) =>
     allowedIds.has(id),
@@ -60,7 +75,7 @@ recommendationsRouter.get("/products", limit, async (req, res) => {
     orderBy: { price: "asc" },
   });
   res.json({
-    fonte: "OpenAI",
+    fonte: "Gemini",
     mensagem: parsed.mensagem,
     aviso:
       "Compatibilidade orientativa: confirme a especificação no manual do veículo.",

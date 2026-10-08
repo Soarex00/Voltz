@@ -11,10 +11,10 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true
-      - key: OPENAI_API_KEY
+      - key: GEMINI_API_KEY
         sync: false
-      - key: OPENAI_MODEL
-        value: gpt-6-luna
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
       - key: ADMIN_NAME
         value: Administrador Voltz
       - key: ADMIN_EMAIL
