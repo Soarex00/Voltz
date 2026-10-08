@@ -16,7 +16,6 @@ const statusLabels = Object.fromEntries(
 export default function AdminDashboard() {
   const [summary, setSummary] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [selectedStatuses, setSelectedStatuses] = useState({});
   const [updatingStatuses, setUpdatingStatuses] = useState({});
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
@@ -29,9 +28,6 @@ export default function AdminDashboard() {
       ]);
       setSummary(a.data);
       setOrders(b.data);
-      setSelectedStatuses(
-        Object.fromEntries(b.data.map((order) => [order.id, order.status])),
-      );
       setProducts(c.data);
     } catch (e) {
       setError(
@@ -42,20 +38,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     load();
   }, [load]);
-  async function respond(order) {
-    const respostaAdmin = window.prompt(
-      "Resposta para o cliente:",
-      order.respostaAdmin || "",
-    );
-    if (respostaAdmin === null) return;
-    await api.patch(`/admin/orders/${order.id}`, {
-      status: order.status,
-      respostaAdmin,
-    });
-    await load();
-  }
   async function updateStatus(order, status) {
-    setSelectedStatuses((current) => ({ ...current, [order.id]: status }));
     setUpdatingStatuses((current) => ({ ...current, [order.id]: true }));
     try {
       await api.patch(`/admin/orders/${order.id}`, {
@@ -64,10 +47,6 @@ export default function AdminDashboard() {
       });
       await load();
     } catch (e) {
-      setSelectedStatuses((current) => ({
-        ...current,
-        [order.id]: order.status,
-      }));
       window.alert(
         e.response?.data?.mensagem || "Não foi possível atualizar o status.",
       );
@@ -92,11 +71,6 @@ export default function AdminDashboard() {
       destaque: product.destaque,
       ativo: product.ativo,
     });
-    await load();
-  }
-  async function remove(id) {
-    if (!window.confirm("Excluir este pedido?")) return;
-    await api.delete(`/admin/orders/${id}`);
     await load();
   }
   return (
@@ -180,44 +154,30 @@ export default function AdminDashboard() {
                     {o.respostaAdmin && <p>Resposta: {o.respostaAdmin}</p>}
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <label className="flex items-center gap-2 text-sm">
-                      Status
-                      <select
-                        value={selectedStatuses[o.id] || o.status}
-                        onChange={(event) =>
-                          updateStatus(o, event.target.value)
-                        }
-                        disabled={updatingStatuses[o.id]}
-                        className="rounded border px-3 py-2 disabled:opacity-50"
-                      >
-                        {statuses.map((status) => (
-                          <option key={status.value} value={status.value}>
-                            {status.label}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    {updatingStatuses[o.id] && (
+                    {updatingStatuses[o.id] ? (
                       <span className="text-sm text-gray-500">Salvando…</span>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => updateStatus(o, "CANCELADO")}
+                          disabled={["CANCELADO", "CONCLUIDO"].includes(
+                            o.status,
+                          )}
+                          className="px-4 py-2 rounded border border-red-300 text-red-700 disabled:opacity-50"
+                        >
+                          Cancelar pedido
+                        </button>
+                        <button
+                          onClick={() => updateStatus(o, "CONCLUIDO")}
+                          disabled={["CANCELADO", "CONCLUIDO"].includes(
+                            o.status,
+                          )}
+                          className="px-4 py-2 rounded bg-green-700 text-white disabled:opacity-50"
+                        >
+                          Marcar entregue
+                        </button>
+                      </>
                     )}
-                    <a
-                      className="px-4 py-2 rounded border text-blue-800"
-                      href={`mailto:${encodeURIComponent(o.cliente.email)}?subject=${encodeURIComponent(`Atualização do pedido ${o.id}`)}&body=${encodeURIComponent(o.respostaAdmin || `Olá ${o.cliente.nome}, seu pedido está ${o.status}.`)}`}
-                    >
-                      Enviar e-mail
-                    </a>
-                    <button
-                      onClick={() => respond(o)}
-                      className="px-4 py-2 rounded bg-blue-700 text-white"
-                    >
-                      Responder cliente
-                    </button>
-                    <button
-                      onClick={() => remove(o.id)}
-                      className="px-4 py-2 rounded border"
-                    >
-                      Excluir
-                    </button>
                   </div>
                 </div>
               </article>
