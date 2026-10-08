@@ -7,18 +7,21 @@ export default function BatteryFilter() {
   const [vehicle, setVehicle] = useState("");
   const [products, setProducts] = useState([]);
   const [message, setMessage] = useState("");
+  const [source, setSource] = useState("");
   const [loading, setLoading] = useState(false);
   async function recommend(event) {
     event.preventDefault();
     if (vehicle.trim().length < 2) return;
     setLoading(true);
     setMessage("");
+    setSource("");
     setProducts([]);
     try {
       const { data } = await api.get("/recommendations/products", {
         params: { vehicle },
       });
       setProducts(data.produtos);
+      setSource(data.fonte);
       setMessage(`${data.mensagem} ${data.aviso}`);
     } catch (error) {
       setMessage(
@@ -69,12 +72,17 @@ export default function BatteryFilter() {
         </div>
       </section>
       {message && (
-        <p
+        <div
           role="status"
           className="max-w-3xl mx-auto mt-6 px-4 text-center text-gray-700"
         >
-          {message}
-        </p>
+          {source && (
+            <p className="mb-2 font-semibold text-blue-800">
+              Explicação gerada pela IA ({source})
+            </p>
+          )}
+          <p>{message}</p>
+        </div>
       )}
       {products.length > 0 && (
         <div className="mt-8">

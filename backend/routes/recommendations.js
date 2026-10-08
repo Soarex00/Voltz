@@ -33,7 +33,7 @@ recommendationsRouter.get("/products", limit, async (req, res) => {
       contents: JSON.stringify({ veiculo: vehicle, catalogo: catalog }),
       config: {
         systemInstruction:
-          "Você recomenda baterias apenas com base no catálogo fornecido. Considere a correspondência do veículo com a lista vehicles. Nunca invente produto, capacidade ou compatibilidade. Se não houver correspondência segura, retorne lista vazia e explique em português que o cliente deve consultar o manual ou especialista. Recomendação é orientativa.",
+          "Você recomenda baterias apenas com base no catálogo fornecido. Compare o veículo informado com a lista vehicles dos produtos e escolha somente IDs existentes. Na mensagem, explique de forma breve e específica quais dados do veículo coincidiram com o cadastro escolhido; não responda apenas que encontrou uma bateria. Nunca invente produto, capacidade, CCA, medidas ou compatibilidade que não estejam no catálogo. Se não houver correspondência segura, retorne lista vazia e explique em português que o cliente deve consultar o manual ou especialista. Recomendação é orientativa.",
         responseMimeType: "application/json",
         responseSchema: {
           type: "OBJECT",
