@@ -55,12 +55,17 @@ export default function FormAddBateria() {
         price: "",
         vehicles: "",
       });
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
+      const validationErrors = error.response?.data?.erros
+        ?.map(({ campo, mensagem }) => `${campo}: ${mensagem}`)
+        .join("\n");
       Swal.fire({
         icon: "error",
         title: "Erro!",
-        text: "Não foi possível adicionar a bateria.",
+        text:
+          validationErrors ||
+          error.response?.data?.mensagem ||
+          "Não foi possível adicionar a bateria. Confira os dados e tente novamente.",
         confirmButtonColor: "#002D72",
       });
     }
